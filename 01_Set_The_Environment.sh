@@ -19,8 +19,25 @@
         Wheel Radius: 0.14
     Articulation Controller 
         Add Target -->  click on nova_carter > chassis_link > Select to set the target to the Carter robot
-    Constant Token # joint_wheel_left.
-    Constant Token # joint_wheel_right..
+    (1)Constant Token # joint_wheel_left.
+    (2)Constant Token # joint_wheel_right..
+
+Node connections:
+         
+         node            outputs                                  node                       inputs
+         
+"On Playback Tick "         -  Tick               ---------------->  "ROS2 Subscribe Twist"          Exec In
+"On Playback Tick "         -  Tick               ---------------->  "Differential Controller"       Exec In
+"ROS2 Context  "            -  Context            ---------------->  "ROS2 Subscribe Twist"          Context
+"ROS2 Subscribe Twist "     -  Angula Velocity    ---------------->  (1)"Break 3-Vector"             Vector
+"ROS2 Subscribe Twist "     -  Linear Velocity    ---------------->  "Scale To/From Stage Units"     Value
+(1)"Break 3-Vector"         -  z                  ---------------->  "Differential Controller"       Desired Angular velocity
+"Scale To/From Stage Units" -  Result             ---------------->  (2)"Break 3-Vector"             Vector
+(2)"Break 3-Vector"         -  x                  ---------------->  "ROS2 Subscribe Twist"          Desired Linear velocity
+(1)"Constant Token"         -  Value              ---------------->  "Make Array"                    Input0
+(2)"Constant Token"         -  Value              ---------------->  "Make Array"                    Input1
+"Make Array"                -  Array              ---------------->  "Articulation Controller"       Joints
+"Differential Controller"   -  Velocity Command   ---------------->  "Articulation Controller"       Velocity Command
 
       ## Only for Windows Users
       ## Open a powershell terminal and install an Ubuntu distro, if you dont have it
